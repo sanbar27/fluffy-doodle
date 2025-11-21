@@ -105,54 +105,58 @@ client.on('messageCreate', async message => {
     }
 
     // --------- ?addvouch ---------
-    if (command === 'addvouch') {
-        const user = message.mentions.users.first();
-        const amount = parseInt(args[0]);
-        if (!user) return message.reply('❌ You must mention a user!');
-        if (!amount || amount <= 0) return message.reply('❌ Amount must be a positive number!');
+    // --------- ?addvouch ---------
+if (command === 'addvouch') {
+    const user = message.mentions.users.first();
+    if (!user) return message.reply('❌ You must mention a user!');
 
-        db[user.id] = (db[user.id] || 0) + amount;
-        fs.writeFileSync(dbPath, JSON.stringify(db, null, 2));
+    const amount = Number(args[1]); // get the second argument
+    if (isNaN(amount) || amount <= 0) return message.reply('❌ Amount must be a positive number!');
 
-        const embed = new EmbedBuilder()
-            .setColor('#000000')
-            .setTitle('💎 OFFICIAL VOUCH SYSTEM 💎')
-            .setDescription(`**${amount} vouches** have been officially added to **${user.tag}**!`)
-            .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
-            .addFields(
-                { name: '👤 User', value: `> **${user.tag}**`, inline: true },
-                { name: '🏆 Total Vouches', value: `> **${db[user.id]}**`, inline: true }
-            )
-            .setFooter({ text: '✨ Trust & Reputation System ✨' })
-            .setTimestamp();
+    db[user.id] = (db[user.id] || 0) + amount;
+    fs.writeFileSync(dbPath, JSON.stringify(db, null, 2));
 
-        return message.reply({ embeds: [embed] });
-    }
+    const embed = new EmbedBuilder()
+        .setColor('#000000')
+        .setTitle('💎 OFFICIAL VOUCH SYSTEM 💎')
+        .setDescription(`**${amount} vouches** have been officially added to **${user.tag}**!`)
+        .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
+        .addFields(
+            { name: '👤 User', value: `> **${user.tag}**`, inline: true },
+            { name: '🏆 Total Vouches', value: `> **${db[user.id]}**`, inline: true }
+        )
+        .setFooter({ text: '✨ Trust & Reputation System ✨' })
+        .setTimestamp();
 
-    // --------- ?removevouch ---------
-    if (command === 'removevouch') {
-        const user = message.mentions.users.first();
-        const amount = parseInt(args[0]);
-        if (!user) return message.reply('❌ You must mention a user!');
-        if (!amount || amount <= 0) return message.reply('❌ Amount must be a positive number!');
+    return message.reply({ embeds: [embed] });
+}
 
-        db[user.id] = Math.max((db[user.id] || 0) - amount, 0);
-        fs.writeFileSync(dbPath, JSON.stringify(db, null, 2));
+// --------- ?removevouch ---------
+if (command === 'removevouch') {
+    const user = message.mentions.users.first();
+    if (!user) return message.reply('❌ You must mention a user!');
 
-        const embed = new EmbedBuilder()
-            .setColor('#000000')
-            .setTitle('💎 OFFICIAL VOUCH SYSTEM 💎')
-            .setDescription(`**${amount} vouches** have been removed from **${user.tag}**!`)
-            .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
-            .addFields(
-                { name: '👤 User', value: `> **${user.tag}**`, inline: true },
-                { name: '🏆 Total Vouches', value: `> **${db[user.id]}**`, inline: true }
-            )
-            .setFooter({ text: '✨ Trust & Reputation System ✨' })
-            .setTimestamp();
+    const amount = Number(args[1]); // get the second argument
+    if (isNaN(amount) || amount <= 0) return message.reply('❌ Amount must be a positive number!');
 
-        return message.reply({ embeds: [embed] });
-    }
+    db[user.id] = Math.max((db[user.id] || 0) - amount, 0);
+    fs.writeFileSync(dbPath, JSON.stringify(db, null, 2));
+
+    const embed = new EmbedBuilder()
+        .setColor('#000000')
+        .setTitle('💎 OFFICIAL VOUCH SYSTEM 💎')
+        .setDescription(`**${amount} vouches** have been removed from **${user.tag}**!`)
+        .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
+        .addFields(
+            { name: '👤 User', value: `> **${user.tag}**`, inline: true },
+            { name: '🏆 Total Vouches', value: `> **${db[user.id]}**`, inline: true }
+        )
+        .setFooter({ text: '✨ Trust & Reputation System ✨' })
+        .setTimestamp();
+
+    return message.reply({ embeds: [embed] });
+}
+
 
     // --------- ?leaderboard ---------
     if (command === 'leaderboard') {
@@ -196,5 +200,4 @@ client.once('ready', () => {
     console.log(`✅ Logged in as ${client.user.tag}`);
 });
 
-// Only this login is needed
 client.login(process.env.TOKEN);
