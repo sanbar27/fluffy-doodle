@@ -1,15 +1,22 @@
 require('dotenv').config();
 const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
 const fs = require('fs');
-client.login(process.env.TOKEN);
 
+// ------------------
 // Database file
+// ------------------
 const dbPath = './vouches.json';
 if (!fs.existsSync(dbPath)) fs.writeFileSync(dbPath, JSON.stringify({}));
 
+// ------------------
 // Create bot
+// ------------------
 const client = new Client({
-    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent
+    ]
 });
 
 // ------------------
@@ -100,7 +107,7 @@ client.on('messageCreate', async message => {
     // --------- ?addvouch ---------
     if (command === 'addvouch') {
         const user = message.mentions.users.first();
-        const amount = parseInt(args[1]);
+        const amount = parseInt(args[0]);
         if (!user) return message.reply('❌ You must mention a user!');
         if (!amount || amount <= 0) return message.reply('❌ Amount must be a positive number!');
 
@@ -125,7 +132,7 @@ client.on('messageCreate', async message => {
     // --------- ?removevouch ---------
     if (command === 'removevouch') {
         const user = message.mentions.users.first();
-        const amount = parseInt(args[1]);
+        const amount = parseInt(args[0]);
         if (!user) return message.reply('❌ You must mention a user!');
         if (!amount || amount <= 0) return message.reply('❌ Amount must be a positive number!');
 
@@ -189,4 +196,5 @@ client.once('ready', () => {
     console.log(`✅ Logged in as ${client.user.tag}`);
 });
 
-client.login(token);
+// Only this login is needed
+client.login(process.env.TOKEN);
