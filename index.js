@@ -38,7 +38,7 @@ function fancyText(text) {
 }
 
 // ------------------
-// PREFIX COMMANDS (hidden with ?)
+// PREFIX COMMANDS
 // ------------------
 client.on('messageCreate', async message => {
     if (message.author.bot) return;
@@ -65,13 +65,13 @@ client.on('messageCreate', async message => {
         const embed = new EmbedBuilder()
             .setColor('#000000')
             .setTitle('💎 OFFICIAL VOUCH SYSTEM 💎')
-            .setDescription(`A new vouch has been officially recorded!`)
+            .setDescription(fancyText(`A new vouch has been officially recorded!`))
             .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
             .addFields(
-                { name: '👤 User', value: `> **${user.tag}**`, inline: true },
-                { name: '🏆 Total Vouches', value: `> **${db[user.id]}**`, inline: true }
+                { name: fancyText('👤 User'), value: `> **${user.tag}**`, inline: true },
+                { name: fancyText('🏆 Total Vouches'), value: `> **${db[user.id]}**`, inline: true }
             )
-            .setFooter({ text: '✨ Trust & Reputation System ✨' })
+            .setFooter({ text: fancyText('✨ Trust & Reputation System ✨') })
             .setTimestamp();
 
         return message.reply({ embeds: [embed] });
@@ -86,77 +86,75 @@ client.on('messageCreate', async message => {
         const embed = new EmbedBuilder()
             .setColor('#000000')
             .setTitle('📜 VOUCH STATUS REPORT 📜')
-            .setDescription(`Official record of vouches:`)
+            .setDescription(fancyText('Official record of vouches:'))
             .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
             .addFields(
-                { name: '👤 User', value: `> **${user.tag}**`, inline: true },
-                { name: '🏆 Total Vouches', value: `> **${count}**`, inline: true },
-                { name: '⭐ Reputation', value: `> **${
+                { name: fancyText('👤 User'), value: `> **${user.tag}**`, inline: true },
+                { name: fancyText('🏆 Total Vouches'), value: `> **${count}**`, inline: true },
+                { name: fancyText('⭐ Reputation'), value: `> **${
                     count > 500 ? "💎 Legendary Trusted Member" :
                     count > 100 ? "🌟 Highly Trusted" :
                     count > 10 ? "✅ Trusted Member" :
                     "🆕 New / Unverified"
                 }**`, inline: true }
             )
-            .setFooter({ text: '⚡ Official Reputation System ⚡' })
+            .setFooter({ text: fancyText('⚡ Official Reputation System ⚡') })
             .setTimestamp();
 
         return message.reply({ embeds: [embed] });
     }
 
     // --------- ?addvouch ---------
-    // --------- ?addvouch ---------
-if (command === 'addvouch') {
-    const user = message.mentions.users.first();
-    if (!user) return message.reply('❌ You must mention a user!');
+    if (command === 'addvouch') {
+        const user = message.mentions.users.first();
+        if (!user) return message.reply('❌ You must mention a user!');
 
-    const amount = Number(args[1]); // get the second argument
-    if (isNaN(amount) || amount <= 0) return message.reply('❌ Amount must be a positive number!');
+        const amount = Number(args[1]); // syntax: ?addvouch @user 67
+        if (isNaN(amount) || amount <= 0) return message.reply('❌ Amount must be a positive number!');
 
-    db[user.id] = (db[user.id] || 0) + amount;
-    fs.writeFileSync(dbPath, JSON.stringify(db, null, 2));
+        db[user.id] = (db[user.id] || 0) + amount;
+        fs.writeFileSync(dbPath, JSON.stringify(db, null, 2));
 
-    const embed = new EmbedBuilder()
-        .setColor('#000000')
-        .setTitle('💎 OFFICIAL VOUCH SYSTEM 💎')
-        .setDescription(`**${amount} vouches** have been officially added to **${user.tag}**!`)
-        .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
-        .addFields(
-            { name: '👤 User', value: `> **${user.tag}**`, inline: true },
-            { name: '🏆 Total Vouches', value: `> **${db[user.id]}**`, inline: true }
-        )
-        .setFooter({ text: '✨ Trust & Reputation System ✨' })
-        .setTimestamp();
+        const embed = new EmbedBuilder()
+            .setColor('#000000')
+            .setTitle('💎 OFFICIAL VOUCH SYSTEM 💎')
+            .setDescription(fancyText(`**${amount} vouches** have been officially added to **${user.tag}**!`))
+            .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
+            .addFields(
+                { name: fancyText('👤 User'), value: `> **${user.tag}**`, inline: true },
+                { name: fancyText('🏆 Total Vouches'), value: `> **${db[user.id]}**`, inline: true }
+            )
+            .setFooter({ text: fancyText('✨ Trust & Reputation System ✨') })
+            .setTimestamp();
 
-    return message.reply({ embeds: [embed] });
-}
+        return message.reply({ embeds: [embed] });
+    }
 
-// --------- ?removevouch ---------
-if (command === 'removevouch') {
-    const user = message.mentions.users.first();
-    if (!user) return message.reply('❌ You must mention a user!');
+    // --------- ?removevouch ---------
+    if (command === 'removevouch') {
+        const user = message.mentions.users.first();
+        if (!user) return message.reply('❌ You must mention a user!');
 
-    const amount = Number(args[1]); // get the second argument
-    if (isNaN(amount) || amount <= 0) return message.reply('❌ Amount must be a positive number!');
+        const amount = Number(args[1]); // syntax: ?removevouch @user 50
+        if (isNaN(amount) || amount <= 0) return message.reply('❌ Amount must be a positive number!');
 
-    db[user.id] = Math.max((db[user.id] || 0) - amount, 0);
-    fs.writeFileSync(dbPath, JSON.stringify(db, null, 2));
+        db[user.id] = Math.max((db[user.id] || 0) - amount, 0);
+        fs.writeFileSync(dbPath, JSON.stringify(db, null, 2));
 
-    const embed = new EmbedBuilder()
-        .setColor('#000000')
-        .setTitle('💎 OFFICIAL VOUCH SYSTEM 💎')
-        .setDescription(`**${amount} vouches** have been removed from **${user.tag}**!`)
-        .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
-        .addFields(
-            { name: '👤 User', value: `> **${user.tag}**`, inline: true },
-            { name: '🏆 Total Vouches', value: `> **${db[user.id]}**`, inline: true }
-        )
-        .setFooter({ text: '✨ Trust & Reputation System ✨' })
-        .setTimestamp();
+        const embed = new EmbedBuilder()
+            .setColor('#000000')
+            .setTitle('💎 OFFICIAL VOUCH SYSTEM 💎')
+            .setDescription(fancyText(`**${amount} vouches** have been removed from **${user.tag}**!`))
+            .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
+            .addFields(
+                { name: fancyText('👤 User'), value: `> **${user.tag}**`, inline: true },
+                { name: fancyText('🏆 Total Vouches'), value: `> **${db[user.id]}**`, inline: true }
+            )
+            .setFooter({ text: fancyText('✨ Trust & Reputation System ✨') })
+            .setTimestamp();
 
-    return message.reply({ embeds: [embed] });
-}
-
+        return message.reply({ embeds: [embed] });
+    }
 
     // --------- ?leaderboard ---------
     if (command === 'leaderboard') {
@@ -182,11 +180,11 @@ if (command === 'removevouch') {
 
         const embed = new EmbedBuilder()
             .setColor('#000000')
-            .setTitle('🏆 𝗢𝗙𝗙𝗜𝗖𝗜𝗔𝗟 𝗩𝗢𝗨𝗖𝗛 𝗟𝗘𝗔𝗗𝗘𝗥𝗕𝗢𝗔𝗥𝗗 🏆')
-            .setDescription(leaderboard.map(line => fancyText(line)).join('\n'))
+            .setTitle(fancyText('🏆 OFFICIAL VOUCH LEADERBOARD 🏆'))
+            .setDescription(fancyText(leaderboard.join('\n')))
             .setThumbnail('https://cdn.pixabay.com/photo/2017/01/31/13/14/trophy-2023288_1280.png')
             .setImage('https://cdn.pixabay.com/photo/2016/03/31/19/31/medal-1295101_1280.png')
-            .setFooter({ text: '✨ Top Vouched Members ✨', iconURL: client.user.displayAvatarURL({ dynamic: true }) })
+            .setFooter({ text: fancyText('✨ Top Vouched Members ✨'), iconURL: client.user.displayAvatarURL({ dynamic: true }) })
             .setTimestamp();
 
         return message.reply({ embeds: [embed] });
